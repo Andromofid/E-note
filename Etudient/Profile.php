@@ -12,7 +12,7 @@ if (!isset($_SESSION['data'])) {
     $sql = $db->prepare("SELECT * FROM module WHERE Anne =?");
     $sql->execute([$etudient['Anne']]);
     $modules = $sql->fetchAll();
-    $sql = $db->prepare("SELECT * FROM passerexam P join exam E on P.IdExam = E.IdExam Join module M ON M.IdModule = E.IdModule where P.IdEtud =?");
+    $sql = $db->prepare("SELECT * FROM passerexam P join exam E on P.IdExam = E.IdExam Join module M ON M.IdModule = E.IdModule where P.IdEtud =?  limit 4");
     $sql->execute([$etudient['IdEtud']]);
     $notes = $sql->fetchAll();
     $dataPoints = array();
