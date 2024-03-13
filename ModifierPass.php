@@ -51,7 +51,18 @@ if (!isset($_SESSION['data'])) {
         <p>Mot De Pass:
             <input class="form-control  " type="text" name="Confirmpass" placeholder="Confirmer le mot de pass">
         </p>
-        <button type="submit" class="btn btn-primary" name="done">Vslider</button>
+        <button type="submit" class="btn btn-primary" name="done">Valider</button>
+        <?php
+        switch ($_SESSION['data']['Type']) {
+            case 'Admin':?>
+                <a href="Admin/Profile.php" class="mx-2">Ignorer</a>
+            <?php break; case 'Etudient': ?>
+                <a href="Etudient/Profile.php" class="mx-2">Ignorer</a>
+            <?php break;default:?>
+                <a href="Formateur/Profile.php" class="mx-2">Ignorer</a>
+            <?php break;
+            }
+        ?>
     </form>
 </body>
 

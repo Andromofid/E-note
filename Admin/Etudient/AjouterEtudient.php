@@ -48,7 +48,7 @@ if (!isset($_SESSION['data'])) {
                     <a href="">List De Formateur</a>
                 </li>
                 <li class="mx-2">
-                <a href="<?php session_destroy();?>">Deconnecter</a>
+                <a href="">Deconnecter</a>
                 </li>
             </ul>
         </div>
