@@ -4,6 +4,7 @@ session_start();
 if (!isset($_SESSION['data'])) {
     header("location:../../Index.php");
 } else {
+
     $data = $_SESSION['data'];
     $sql = $db->prepare("SELECT * FROM user U JOIN etudient E ON U.idUser = E.IdUser JOIN groupe G ON E.IdGroup = G.IdGroup WHERE U.idUser=?");
     $sql->execute([$data['idUser']]);
@@ -11,6 +12,14 @@ if (!isset($_SESSION['data'])) {
     $sql = $db->prepare("SELECT * FROM module WHERE Anne =?");
     $sql->execute([$etudient['Anne']]);
     $modules = $sql->fetchAll();
+    $sql = $db->prepare("SELECT * FROM passerexam P join exam E on P.IdExam = E.IdExam Join module M ON M.IdModule = E.IdModule where P.IdEtud =?");
+    $sql->execute([$etudient['IdEtud']]);
+    $notes = $sql->fetchAll();
+    $dataPoints = array();
+    foreach($notes as $notes){
+        array_push($dataPoints, array("y" => $notes['Note'], "label" =>$notes['NomM'] ));
+
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -26,6 +35,31 @@ if (!isset($_SESSION['data'])) {
             vertical-align: middle;
         }
     </style>
+    <script>
+        window.onload = function() {
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: ""
+                },
+                axisY: {
+                    title: "note/20 "
+                },
+                axisX: {
+                    title: "Modules"
+                },
+                data: [{
+                    type: "column",
+                    yValueFormatString: "#,##0.##/20",
+                    dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+                }]
+            });
+            chart.render();
+
+        }
+    </script>
 </head>
 
 <body>
@@ -68,8 +102,8 @@ if (!isset($_SESSION['data'])) {
             </table>
         </div>
         <div class="row">
-            <ul class="list-group  w-50" >
-                <li class="list-group-item list-group-item-dark fs-4">List des groupes: </li>
+            <ul class="list-group  w-50">
+                <li class="list-group-item list-group-item-dark fs-4">List des Modules: </li>
                 <?php
                 foreach ($modules as $module) {
                 ?>
@@ -83,6 +117,13 @@ if (!isset($_SESSION['data'])) {
             </div>
         </div>
     </div>
+    <hr width="90%" class="mx-auto mt-5">
+    <div class="container-fluid">
+        <h3 class="text-center mt-4">graph des derniere notes</h3>
+        <div id="chartContainer" style="height: 370px" class="w-75 my-5 mx-auto" ></div>
+    </div>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
 </body>
 
 </html>
